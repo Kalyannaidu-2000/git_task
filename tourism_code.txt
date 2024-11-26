@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore World</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+    <div class="logo"><h1>Explore World</h1></div>
+    <nav><ul><li><a href="#home">Home</a></li><li><a href="#services">Services</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#contact">Contact</a></li></ul></nav>
+</header>
+
+<section id="home" class="banner">
+    <div class="banner-content">
+        <h2>Discover the Beauty of the World</h2>
+        <p>Find your perfect destination</p>
+        <a href="#services" class="btn">Explore Now</a>
+    </div>
+</section>
+
+<section id="services">
+    <h2>Our Services</h2>
+    <div class="cards">
+        <div class="card"><img src="https://via.placeholder.com/300" alt=""><h3>Tour Packages</h3></div>
+        <div class="card"><img src="https://via.placeholder.com/300" alt=""><h3>Adventure Tours</h3></div>
+        <div class="card"><img src="https://via.placeholder.com/300" alt=""><h3>Hotel Booking</h3></div>
+    </div>
+</section>
+
+<section id="gallery">
+    <h2>Beautiful Destinations</h2>
+    <div class="images">
+        <img src="https://via.placeholder.com/400" alt=""><img src="https://via.placeholder.com/400" alt="">
+    </div>
+</section>
+
+<section id="contact">
+    <h2>Contact Us</h2>
+    <form>
+        <input type="text" placeholder="Your Name"><input type="email" placeholder="Your Email">
+        <textarea placeholder="Your Message"></textarea>
+        <button type="submit" class="btn">Send Message</button>
+    </form>
+</section>
+
+<footer>
+    <p>&copy; 2024 Explore World</p>
+</footer>
+
+</body>
+</html>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; color: #333; }
+
+header { background: #333; color: white; padding: 20px; display: flex; justify-content: space-between; }
+header nav ul { display: flex; list-style: none; }
+header nav ul li { margin: 0 15px; }
+header nav ul li a { color: white; text-decoration: none; }
+
+.banner { background: url('https://via.placeholder.com/1600x800') center center/cover; height: 60vh; text-align: center; color: white; }
+.banner .btn { background: #f39c12; padding: 10px 20px; color: white; text-decoration: none; }
+
+#services, #gallery, #contact { padding: 50px 20px; text-align: center; }
+
+.cards { display: flex; justify-content: space-around; }
+.card { background: #f1f1f1; padding: 20px; width: 30%; border-radius: 8px; text-align: center; }
+.card img { width: 100%; border-radius: 8px; }
+
+.images { display: flex; justify-content: space-around; }
+.images img { width: 45%; border-radius: 8px; }
+
+form input, form textarea { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+form button { background: #f39c12; color: white; padding: 15px 30px; border: none; cursor: pointer; }
+
+footer { background: #333; color: white; padding: 10px; text-align: center; }
