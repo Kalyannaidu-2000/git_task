@@ -1,0 +1,203 @@
+#include <iostream> 
+
+#include <vector> 
+
+#include <algorithm> 
+
+#include <string> 
+
+#include <random> 
+
+  
+
+struct Control { 
+
+    int id;              // Unique ID for the control 
+
+    std::string type;    // Type of the control: "button" or "slider" 
+
+    std::string state;   // State of the control: "visible", "invisible", "disabled" 
+
+}; 
+
+  
+
+int main() { 
+
+       std::vector<Control> controls = { 
+
+        {1, "button", "visible"}, 
+
+        {2, "slider", "invisible"}, 
+
+        {3, "button", "disabled"}, 
+
+        {4, "slider", "visible"}, 
+
+        {5, "button", "visible"}, 
+
+        {6, "slider", "disabled"}, 
+
+        {7, "button", "invisible"}, 
+
+        {8, "slider", "visible"}, 
+
+        {9, "button", "disabled"}, 
+
+        {10, "slider", "visible"} 
+
+    }; 
+
+  
+
+       std::vector<Control> backupControls = controls; 
+
+    std::cout << "Backup of control list (original state):\n"; 
+
+    for (const auto& ctrl : backupControls) { 
+
+        std::cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n"; 
+
+    } 
+
+  
+
+        std::fill(controls.begin(), controls.end(), Control{0, "", "disabled"}); 
+
+    std::cout << "\nAll controls set to disabled:\n"; 
+
+    for (const auto& ctrl : controls) { 
+
+        std::cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n"; 
+
+    } 
+
+  
+
+     std::random_device rd; 
+
+    std::mt19937 gen(rd()); 
+
+    std::uniform_int_distribution<> dis(0, 2); // 0 -> visible, 1 -> invisible, 2 -> disabled 
+
+    std::vector<std::string> states = {"visible", "invisible", "disabled"}; 
+
+     
+
+    std::generate(controls.begin(), controls.end(), [&]() { 
+
+        Control ctrl; 
+
+        ctrl.state = states[dis(gen)]; 
+
+        ctrl.id = 0;  // ID reset for testing 
+
+        ctrl.type = (dis(gen) % 2 == 0) ? "slider" : "button"; 
+
+        return ctrl; 
+
+    }); 
+
+     
+
+    std::cout << "\nControls after random state generation:\n"; 
+
+    for (const auto& ctrl : controls) { 
+
+        std::cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n"; 
+
+    } 
+
+  
+
+       std::transform(controls.begin(), controls.end(), controls.begin(), [](Control& ctrl) { 
+
+        if (ctrl.type == "slider") { 
+
+            ctrl.state = "invisible"; 
+
+        } 
+
+        return ctrl; 
+
+    }); 
+
+    std::cout << "\nAfter transforming sliders to invisible:\n"; 
+
+    for (const auto& ctrl : controls) { 
+
+        std::cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n"; 
+
+    } 
+
+  
+
+      std::replace_if(controls.begin(), controls.end(), [](const Control& ctrl) { 
+
+        return ctrl.state == "disabled"; 
+
+    }, Control{0, "", "enabled"}); 
+
+    std::cout << "\nAfter replacing disabled with enabled:\n"; 
+
+    for (const auto& ctrl : controls) { 
+
+        std::cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n"; 
+
+    } 
+
+  
+
+       controls.erase(std::remove_if(controls.begin(), controls.end(), [](const Control& ctrl) { 
+
+        return ctrl.state == "invisible"; 
+
+    }), controls.end()); 
+
+    std::cout << "\nAfter removing invisible controls:\n"; 
+
+    for (const auto& ctrl : controls) { 
+
+        std::cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n"; 
+
+    } 
+
+  
+
+      std::reverse(controls.begin(), controls.end()); 
+
+    std::cout << "\nAfter reversing the control order:\n"; 
+
+    for (const auto& ctrl : controls) { 
+
+        std::cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n"; 
+
+    } 
+
+  
+
+     auto partitionPoint = std::partition(controls.begin(), controls.end(), [](const Control& ctrl) { 
+
+        return ctrl.state == "visible"; 
+
+    }); 
+
+    std::cout << "\nAfter partitioning visible controls:\n"; 
+
+    for (auto it = controls.begin(); it != partitionPoint; ++it) { 
+
+        std::cout << "ID: " << it->id << ", Type: " << it->type << ", State: " << it->state << "\n"; 
+
+    } 
+
+    for (auto it = partitionPoint; it != controls.end(); ++it) { 
+
+        std::cout << "ID: " << it->id << ", Type: " << it->type << ", State: " << it->state << "\n"; 
+
+    } 
+
+  
+
+    return 0; 
+
+} 

@@ -1,0 +1,331 @@
+#include <iostream> 
+
+#include <vector> 
+
+#include <string> 
+
+#include <memory> 
+
+#include <algorithm> 
+
+  
+
+class HMISystem { 
+
+public: 
+
+      static HMISystem& getInstance() { 
+
+        static HMISystem instance;  
+
+        return instance; 
+
+    } 
+
+  
+
+    void setMode(const std::string& mode) { 
+
+        if (mode != currentMode) { 
+
+            currentMode = mode; 
+
+            notifyObservers();  
+
+        } 
+
+    } 
+
+  
+
+    const std::string& getMode() const { 
+
+        return currentMode; 
+
+    } 
+
+  
+
+    void addObserver(class ModeObserver* observer) { 
+
+        observers.push_back(observer); 
+
+    } 
+
+  
+
+private: 
+
+    HMISystem() : currentMode("Day") {} 
+
+    std::string currentMode; 
+
+    std::vector<class ModeObserver*> observers; 
+
+  
+
+    void notifyObservers() { 
+
+        for (auto observer : observers) { 
+
+            observer->update(currentMode); 
+
+        } 
+
+    } 
+
+  
+
+public: 
+
+     HMISystem(HMISystem const&) = delete; 
+
+    void operator=(HMISystem const&) = delete; 
+
+}; 
+
+  
+
+class ModeObserver { 
+
+public: 
+
+    virtual void update(const std::string& mode) = 0; 
+
+}; 
+
+  
+
+ 
+
+class Button : public ModeObserver { 
+
+public: 
+
+    void update(const std::string& mode) override { 
+
+        if (mode == "Night") { 
+
+            std::cout << "Button: Adjusting visibility for Night Mode.\n"; 
+
+        } else { 
+
+            std::cout << "Button: Adjusting visibility for Day Mode.\n"; 
+
+        } 
+
+    } 
+
+}; 
+
+  
+
+class Slider : public ModeObserver { 
+
+public: 
+
+    void update(const std::string& mode) override { 
+
+        if (mode == "Night") { 
+
+            std::cout << "Slider: Dimming for Night Mode.\n"; 
+
+        } else { 
+
+            std::cout << "Slider: Adjusting for Day Mode.\n"; 
+
+        } 
+
+    } 
+
+}; 
+
+  
+
+class Control { 
+
+public: 
+
+    virtual void render() = 0; 
+
+    virtual ~Control() = default; 
+
+}; 
+
+  
+
+class ButtonControl : public Control { 
+
+public: 
+
+    void render() override { 
+
+        std::cout << "Rendering Button.\n"; 
+
+    } 
+
+}; 
+
+  
+
+class SliderControl : public Control { 
+
+public: 
+
+    void render() override { 
+
+        std::cout << "Rendering Slider.\n"; 
+
+    } 
+
+}; 
+
+  
+
+class ControlFactory { 
+
+public: 
+
+    std::unique_ptr<Control> createControl(const std::string& type) { 
+
+        if (type == "Button") { 
+
+            return std::make_unique<ButtonControl>(); 
+
+        } else if (type == "Slider") { 
+
+            return std::make_unique<SliderControl>(); 
+
+        } 
+
+        return nullptr; 
+
+    } 
+
+}; 
+
+  
+
+class RenderStrategy { 
+
+public: 
+
+    virtual void render() const = 0; 
+
+    virtual ~RenderStrategy() = default; 
+
+}; 
+
+  
+
+class TwoDRender : public RenderStrategy { 
+
+public: 
+
+    void render() const override { 
+
+        std::cout << "Rendering in 2D.\n"; 
+
+    } 
+
+}; 
+
+  
+
+class ThreeDRender : public RenderStrategy { 
+
+public: 
+
+    void render() const override { 
+
+        std::cout << "Rendering in 3D.\n"; 
+
+    } 
+
+}; 
+
+  
+
+class RenderContext { 
+
+public: 
+
+    void setStrategy(std::unique_ptr<RenderStrategy> strategy) { 
+
+        renderStrategy = std::move(strategy); 
+
+    } 
+
+  
+
+    void executeRender() const { 
+
+        renderStrategy->render(); 
+
+    } 
+
+  
+
+private: 
+
+    std::unique_ptr<RenderStrategy> renderStrategy; 
+
+}; 
+
+  
+
+int main() { 
+
+    HMISystem& hmiSystem = HMISystem::getInstance(); 
+
+    hmiSystem.setMode("Night"); 
+
+  
+
+    ControlFactory controlFactory; 
+
+    auto button = controlFactory.createControl("Button"); 
+
+    auto slider = controlFactory.createControl("Slider"); 
+
+  
+
+    button->render(); 
+
+    slider->render(); 
+
+  
+
+    Button btn; 
+
+    Slider sld; 
+
+    hmiSystem.addObserver(&btn); 
+
+    hmiSystem.addObserver(&sld); 
+
+  
+
+    hmiSystem.setMode("Day"); 
+
+  
+
+    RenderContext renderContext; 
+
+    renderContext.setStrategy(std::make_unique<TwoDRender>()); 
+
+    renderContext.executeRender(); 
+
+  
+
+    renderContext.setStrategy(std::make_unique<ThreeDRender>()); 
+
+    renderContext.executeRender(); 
+
+  
+
+    return 0; 
+
+} 
+
+ 
